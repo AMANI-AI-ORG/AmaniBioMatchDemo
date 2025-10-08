@@ -136,9 +136,9 @@ class MainViewController: UIViewController {
       return
     }
     
-    let customer = CustomerRequestModel(name: "", email: "", phone: "", idCardNumber: "")
+    let customer = CustomerRequestModel(name: "", email: "", phone: "", idCardNumber: "22180378472")
     
-    amaniSDK.initAmani(server: "", token: token, customer: customer) { result, error in
+    amaniSDK.initAmani(server: "https://demo2.amani.ai", token: token, customer: customer) { result, error in
       if let error = error {
         self.presentTokenAlert(title: "Init Hatası", message: "Amani init başarısız: \(error.localizedDescription)")
         return
@@ -147,20 +147,7 @@ class MainViewController: UIViewController {
       completion?()
     }
   }
-  
-  private func disableBiopayPin() {
-    amaniSDK.customerInfo().disablePin { result in
-      switch result {
-      case .success(let model):
-        print(model)
-      case .failure(let error):
-        print(error)
-      default:
-        break
-      }
-    }
-  }
-  
+
     // MARK: - Actions
   @objc private func didTapEnableBioPay() {
     
@@ -171,20 +158,44 @@ class MainViewController: UIViewController {
   
   @objc private func didTapDisableBiopay() {
      
-    startAmaniKYC { [weak self] in
-      self?.disableBiopayPin()
-    }
+   disableBiopayPin()
+    
   }
   
   private func didTapEnableBioPayPin() {
-    amaniSDK.customerInfo().enablePin("12345") { result in
-      switch result {
-      case .success(let model):
-        print(model)
-      case .failure(let error):
-        print(error)
-      default:
-        break
+    amaniSDK.customerInfo().enablePin("1234") { [weak self] result in
+      guard let self = self else { return }
+      DispatchQueue.main.async {
+        switch result {
+        case .success(let model):
+          self.presentResultAlert(title: "Enable PIN",
+                                  message: "Başarılı.\n\(String(describing: model))")
+        case .failure(let error):
+          self.presentResultAlert(title: "Enable PIN",
+                                  message: "Hata: \(error.localizedDescription)")
+        default:
+          self.presentResultAlert(title: "Enable PIN",
+                                  message: "Bilinmeyen cevap.")
+        }
+      }
+    }
+  }
+  
+  private func disableBiopayPin() {
+    amaniSDK.customerInfo().disablePin { [weak self] result in
+      guard let self = self else { return }
+      DispatchQueue.main.async {
+        switch result {
+        case .success(let model):
+          self.presentResultAlert(title: "Disable PIN",
+                                  message: "Başarılı.\n\(String(describing: model))")
+        case .failure(let error):
+          self.presentResultAlert(title: "Disable PIN",
+                                  message: "Hata: \(error.localizedDescription)")
+        default:
+          self.presentResultAlert(title: "Disable PIN",
+                                  message: "Bilinmeyen cevap.")
+        }
       }
     }
   }
@@ -205,14 +216,11 @@ extension MainViewController {
   }
   
    
-  private func showAlert(isUploaded: Bool) {
+  private func presentResultAlert(title: String, message: String) {
     DispatchQueue.main.async {
-      let actions: [(String, UIAlertAction.Style)] = [("Ok", .default)]
+      let actions: [(String, UIAlertAction.Style)] = [("OK", .default)]
       AlertDialogueUtility.shared.showAlertWithActions(
-        vc: self,
-        title: "KYC Selfie Upload Response",
-        message: "response: \(isUploaded)",
-        actions: actions
+        vc: self, title: title, message: message, actions: actions
       ) { _ in
         Loader.shared.stop()
       }
