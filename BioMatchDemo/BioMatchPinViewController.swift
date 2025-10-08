@@ -7,8 +7,9 @@
 
 import UIKit
 import Foundation
-import AmaniBioMatch
+//import AmaniBioMatch
 
+/*
 class BioMatchPinViewController: UIViewController {
   var bioMatch: AmaniBioMatchSDK? = nil
   private var pinManager: Pin?
@@ -113,3 +114,4 @@ extension BioMatchPinViewController {
     }
   }
 }
+*/

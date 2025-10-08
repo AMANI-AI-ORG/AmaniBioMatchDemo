@@ -10,9 +10,9 @@ target 'BioMatchDemo' do
 
   # Pods for BioMatchDemo
 
- pod 'AmaniSDK', '3.4.16'
-  pod 'AmaniUI', '1.2.9'
-  pod 'AmaniBioMatch', '1.0.0'
+ pod 'AmaniSDK', '3.4.19'
+
+
 
 end
 

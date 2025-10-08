@@ -6,15 +6,8 @@
 	objectVersion = 77;
 	objects = {
 
-/* Begin PBXBuildFile section */
-		411CB2A238EC31A6F17C7CFE /* Pods_BioMatchDemo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5EEE78414684BB0E976DAF44 /* Pods_BioMatchDemo.framework */; };
-/* End PBXBuildFile section */
-
 /* Begin PBXFileReference section */
-		5EEE78414684BB0E976DAF44 /* Pods_BioMatchDemo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BioMatchDemo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		913812142E852098001FF734 /* BioMatchDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BioMatchDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		E87A4A36F4D1109BF2B4C8A1 /* Pods-BioMatchDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BioMatchDemo.debug.xcconfig"; path = "Target Support Files/Pods-BioMatchDemo/Pods-BioMatchDemo.debug.xcconfig"; sourceTree = "<group>"; };
-		F573E78856D390254B50F920 /* Pods-BioMatchDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BioMatchDemo.release.xcconfig"; path = "Target Support Files/Pods-BioMatchDemo/Pods-BioMatchDemo.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -43,28 +36,18 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				411CB2A238EC31A6F17C7CFE /* Pods_BioMatchDemo.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		57B6B8507BE184FF671B7F84 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				5EEE78414684BB0E976DAF44 /* Pods_BioMatchDemo.framework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 		9138120B2E852098001FF734 = {
 			isa = PBXGroup;
 			children = (
 				913812162E852098001FF734 /* BioMatchDemo */,
 				913812152E852098001FF734 /* Products */,
 				DE5F181A322ED9AB664E5F8E /* Pods */,
-				57B6B8507BE184FF671B7F84 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -79,8 +62,6 @@
 		DE5F181A322ED9AB664E5F8E /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				E87A4A36F4D1109BF2B4C8A1 /* Pods-BioMatchDemo.debug.xcconfig */,
-				F573E78856D390254B50F920 /* Pods-BioMatchDemo.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -92,11 +73,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 913812272E85209A001FF734 /* Build configuration list for PBXNativeTarget "BioMatchDemo" */;
 			buildPhases = (
-				C7B64C791EDB558944A296DF /* [CP] Check Pods Manifest.lock */,
 				913812102E852098001FF734 /* Sources */,
 				913812112E852098001FF734 /* Frameworks */,
 				913812122E852098001FF734 /* Resources */,
-				DFC58748F42D456A11269B31 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -154,48 +133,6 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
-/* Begin PBXShellScriptBuildPhase section */
-		C7B64C791EDB558944A296DF /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-BioMatchDemo-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		DFC58748F42D456A11269B31 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-BioMatchDemo/Pods-BioMatchDemo-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-BioMatchDemo/Pods-BioMatchDemo-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BioMatchDemo/Pods-BioMatchDemo-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-/* End PBXShellScriptBuildPhase section */
-
 /* Begin PBXSourcesBuildPhase section */
 		913812102E852098001FF734 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -209,7 +146,6 @@
 /* Begin XCBuildConfiguration section */
 		913812282E85209A001FF734 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E87A4A36F4D1109BF2B4C8A1 /* Pods-BioMatchDemo.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -240,7 +176,6 @@
 		};
 		913812292E85209A001FF734 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F573E78856D390254B50F920 /* Pods-BioMatchDemo.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;

@@ -6,8 +6,8 @@
 //
 
 import UIKit
-import AmaniBioMatch
-
+//import AmaniBioMatch
+/*
   var pinValue: String? = ""
 
 class BioMatchSelfieViewController: UIViewController {
@@ -86,7 +86,7 @@ class BioMatchSelfieViewController: UIViewController {
     didCompleteBioMatch = false
     
       // SDK init
-    let biomatch = AmaniBioMatchSDK(baseURL: URL(string: "")!, token: token)
+    let biomatch = AmaniBioMatchSDK(baseURL: URL(string: "https://demo2.amani.ai")!, token: token)
     self.bioMatch = biomatch
     
       // Manager
@@ -193,3 +193,4 @@ extension BioMatchSelfieViewController {
     }
   }
 }
+*/

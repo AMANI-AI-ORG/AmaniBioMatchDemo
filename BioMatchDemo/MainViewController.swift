@@ -8,32 +8,66 @@
 
 import UIKit
 import Foundation
-import AmaniUI
+//import AmaniUI
 import AmaniSDK
-import AmaniBioMatch
 
 class MainViewController: UIViewController {
   var amaniSDK: Amani = Amani.sharedInstance
   private var selfieView: UIView?
   private var isStartingSelfie = false
   private var didCompleteSelfie = false
+  private var customerInfo: CustomerInfo?
+  
+    // MARK: - UI
+  private let tokenTextField: UITextField = {
+    let tf = UITextField(frame: .zero)
+    tf.placeholder = "Token"
+    tf.autocorrectionType = .no
+    tf.autocapitalizationType = .none
+    tf.keyboardType = .asciiCapable
     
-  private let kycButton: UIButton = {
-    let b = UIButton(type: .system)
-    b.setTitle("KYC & Payment Register Process", for: .normal)
-    b.setTitleColor(.white, for: .normal)
-    b.titleLabel?.font = .systemFont(ofSize: 17, weight: .semibold)
-    b.backgroundColor = UIColor(red: 0.75, green: 0.24, blue: 0.36, alpha: 1.0)
-    b.layer.cornerRadius = 20
-    b.layer.masksToBounds = true
-    b.translatesAutoresizingMaskIntoConstraints = false
-    return b
-  }()
-  
 
-  private let bioPayButton: UIButton = {
+    tf.backgroundColor = .white
+    tf.textColor = .black
+    tf.tintColor = .black
+    tf.keyboardAppearance = .light
+    if #available(iOS 13.0, *) {
+      tf.overrideUserInterfaceStyle = .light
+    }
+    
+    tf.borderStyle = .none
+    tf.layer.cornerRadius = 8
+    tf.layer.masksToBounds = true
+    tf.layer.borderColor = UIColor.black.cgColor
+    tf.layer.borderWidth = 1.0 / UIScreen.main.scale
+    
+  
+    let padL = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 0))
+    tf.leftView = padL
+    tf.leftViewMode = .always
+    let padR = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 0))
+    tf.rightView = padR
+    tf.rightViewMode = .always
+    
+    tf.attributedPlaceholder = NSAttributedString(
+      string: "Token",
+      attributes: [.foregroundColor: UIColor.darkGray]
+    )
+    
+    tf.clearButtonMode = .whileEditing
+    tf.translatesAutoresizingMaskIntoConstraints = false
+    return tf
+  }()
+  
+  private let tfButtonsSpacer: UIView = {
+    let v = UIView()
+    v.translatesAutoresizingMaskIntoConstraints = false
+    return v
+  }()
+  
+  private let enablebioPayButton: UIButton = {
     let b = UIButton(type: .system)
-    b.setTitle("Payment via Tablet Process", for: .normal)
+    b.setTitle("Enable Pin", for: .normal)
     b.setTitleColor(.white, for: .normal)
     b.titleLabel?.font = .systemFont(ofSize: 17, weight: .semibold)
     b.backgroundColor = UIColor(red: 0.75, green: 0.24, blue: 0.36, alpha: 1.0)
@@ -43,9 +77,17 @@ class MainViewController: UIViewController {
     return b
   }()
   
-  
- 
-  
+  private let disablebioPayButton: UIButton = {
+    let b = UIButton(type: .system)
+    b.setTitle("Disable Pin", for: .normal)
+    b.setTitleColor(.white, for: .normal)
+    b.titleLabel?.font = .systemFont(ofSize: 17, weight: .semibold)
+    b.backgroundColor = UIColor(red: 0.75, green: 0.24, blue: 0.36, alpha: 1.0)
+    b.layer.cornerRadius = 20
+    b.layer.masksToBounds = true
+    b.translatesAutoresizingMaskIntoConstraints = false
+    return b
+  }()
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -55,139 +97,126 @@ class MainViewController: UIViewController {
   private func setupUI() {
     view.backgroundColor = .white
     
-    kycButton.addTarget(self, action: #selector(didTapKYC), for: .touchUpInside)
-    bioPayButton.addTarget(self, action: #selector(didTapBioPay), for: .touchUpInside)
-
+    enablebioPayButton.addTarget(self, action: #selector(didTapEnableBioPay), for: .touchUpInside)
+    disablebioPayButton.addTarget(self, action: #selector(didTapDisableBiopay), for: .touchUpInside)
     
-    let stack = UIStackView(arrangedSubviews: [kycButton, bioPayButton])
+    
+    let stack = UIStackView(arrangedSubviews: [tokenTextField, tfButtonsSpacer, enablebioPayButton, disablebioPayButton])
     stack.axis = .vertical
     stack.alignment = .fill
-    stack.spacing = 30
+    stack.spacing = 16
     stack.translatesAutoresizingMaskIntoConstraints = false
     view.addSubview(stack)
     
     NSLayoutConstraint.activate([
       
-      stack.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+      stack.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+      stack.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+      
+ 
       stack.centerYAnchor.constraint(equalTo: view.centerYAnchor),
       
-      stack.leadingAnchor.constraint(greaterThanOrEqualTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 24),
-      stack.trailingAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -24),
-      stack.widthAnchor.constraint(lessThanOrEqualTo: view.widthAnchor, constant: -48),
-      stack.widthAnchor.constraint(greaterThanOrEqualToConstant: 220),
-      kycButton.heightAnchor.constraint(equalToConstant: 56),
-      bioPayButton.heightAnchor.constraint(equalToConstant: 56),
-     
+ 
+      tokenTextField.heightAnchor.constraint(equalToConstant: 44),
+      enablebioPayButton.heightAnchor.constraint(equalToConstant: 56),
+      disablebioPayButton.heightAnchor.constraint(equalToConstant: 56),
+      
+   
+      tfButtonsSpacer.heightAnchor.constraint(equalToConstant: 60)
     ])
-    
-    startAmaniKYC()
   }
+
   
-  
-  private func startBioSelfieAndPin() {
-    DispatchQueue.main.async {
-      let vc = BioMatchSelfieViewController()
-      vc.modalTransitionStyle = .crossDissolve
-      vc.modalPresentationStyle = .fullScreen
-      
-      self.present(vc, animated: true)
+    // MARK: - Amani init (token zorunlu)
+  private func startAmaniKYC(completion: (() -> Void)? = nil) {
+    let raw = tokenTextField.text ?? ""
+    let token = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+    guard token.isEmpty == false else {
+      presentTokenAlert(title: "Eksik Token", message: "Lütfen token alanını doldurun.")
+      return
     }
-  }
-  
-  private func startAmaniKYC() {
-    let customer:CustomerRequestModel = CustomerRequestModel(name: "", email: "", phone: "", idCardNumber: "")
     
-      //    amaniSDK.init
+    let customer = CustomerRequestModel(name: "", email: "", phone: "", idCardNumber: "")
+    
     amaniSDK.initAmani(server: "", token: token, customer: customer) { result, error in
-      
-    }
-  
-  }
-  
-  func startKYCSelfie() {
-    guard !isStartingSelfie else { return }
-    isStartingSelfie = true
-    didCompleteSelfie = false
-    
-    do {
-      let selfie = amaniSDK.selfie()
-      
-      selfie.setType(type: "XXX_SE_0")
-      
-      guard let view = try selfie.start(completion: { [weak self] previewImage in
-        guard let self = self else { return }
-        
-        guard !self.didCompleteSelfie else { return }
-        self.didCompleteSelfie = true
-        
-        DispatchQueue.main.async {
-          Loader.shared.start()
-          selfie.upload { [weak self] isSuccess in
-            DispatchQueue.main.async {
-              Loader.shared.stop()
-              self?.showAlert(isUploaded: isSuccess ?? false)
-            }
-          }
-          
-          
-          if let v = self.selfieView, v.superview != nil {
-            v.removeFromSuperview()
-          }
-          self.selfieView = nil
-            //          self.selfie = nil
-          self.isStartingSelfie = false
-        }
-      }) else {
-        isStartingSelfie = false
+      if let error = error {
+        self.presentTokenAlert(title: "Init Hatası", message: "Amani init başarısız: \(error.localizedDescription)")
         return
       }
-      
-      if view.superview == nil {
-        view.frame = self.view.bounds
-        self.view.addSubview(view)
-        self.selfieView = view
+      _ = self.amaniSDK.customerInfo().getCustomer()
+      completion?()
+    }
+  }
+  
+  private func disableBiopayPin() {
+    amaniSDK.customerInfo().disablePin { result in
+      switch result {
+      case .success(let model):
+        print(model)
+      case .failure(let error):
+        print(error)
+      default:
+        break
       }
-    } catch {
-      isStartingSelfie = false
-      print("Unexpected error: \(error)")
     }
   }
   
-  @objc private func didTapKYC() {
-    startKYCSelfie()
-  }
-  
-  @objc private func didTapBioPay() {
-    startBioSelfieAndPin()
-  }
-  
-
-  private func startPinRegister() {
-    DispatchQueue.main.async {
-      let vc = BioMatchPinViewController()
-      vc.modalTransitionStyle = .crossDissolve
-      vc.modalPresentationStyle = .fullScreen
-      
-      self.present(vc, animated: true)
-    }
+    // MARK: - Actions
+  @objc private func didTapEnableBioPay() {
     
+    startAmaniKYC { [weak self] in
+      self?.didTapEnableBioPayPin()
+    }
   }
-
+  
+  @objc private func didTapDisableBiopay() {
+     
+    startAmaniKYC { [weak self] in
+      self?.disableBiopayPin()
+    }
+  }
+  
+  private func didTapEnableBioPayPin() {
+    amaniSDK.customerInfo().enablePin("12345") { result in
+      switch result {
+      case .success(let model):
+        print(model)
+      case .failure(let error):
+        print(error)
+      default:
+        break
+      }
+    }
+  }
 }
 
+  // MARK: - Alerts
 extension MainViewController {
+  private func presentTokenAlert(title: String, message: String) {
+    DispatchQueue.main.async {
+      let actions: [(String, UIAlertAction.Style)] = [("OK", .default)]
+      AlertDialogueUtility.shared.showAlertWithActions(
+        vc: self,
+        title: title,
+        message: message,
+        actions: actions
+      ) { _ in }
+    }
+  }
+  
+   
   private func showAlert(isUploaded: Bool) {
     DispatchQueue.main.async {
-      var actions: [(String, UIAlertAction.Style)] = []
-      
-      actions.append(("\("Ok")", UIAlertAction.Style.default))
-      
-      AlertDialogueUtility.shared.showAlertWithActions(vc: self, title: "KYC Selfie Upload Response", message: "response: \(isUploaded)", actions: actions) { index in
-        if index == 0 {
-          Loader.shared.stop()
-          self.startPinRegister()
-        }
+      let actions: [(String, UIAlertAction.Style)] = [("Ok", .default)]
+      AlertDialogueUtility.shared.showAlertWithActions(
+        vc: self,
+        title: "KYC Selfie Upload Response",
+        message: "response: \(isUploaded)",
+        actions: actions
+      ) { _ in
+        Loader.shared.stop()
       }
     }
   }
 }
+
