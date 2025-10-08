@@ -136,9 +136,9 @@ class MainViewController: UIViewController {
       return
     }
     
-    let customer = CustomerRequestModel(name: "", email: "", phone: "", idCardNumber: "22180378472")
+    let customer = CustomerRequestModel(name: "", email: "", phone: "", idCardNumber: "")
     
-    amaniSDK.initAmani(server: "https://demo2.amani.ai", token: token, customer: customer) { result, error in
+    amaniSDK.initAmani(server: "", token: token, customer: customer) { result, error in
       if let error = error {
         self.presentTokenAlert(title: "Init Hatası", message: "Amani init başarısız: \(error.localizedDescription)")
         return
